@@ -20,8 +20,9 @@ export const reduser = (prevState, {type, payload }) => {
 
 
             if (prevState.chosenSchool) {
-                let updatedSchool = {...prevState.chosenSchool, [payload.field]: payload.value}
-                return {...prevState, schools: prevState.schools.map(school => school.id == prevState.chosenSchool.id ? updatedSchool : school),
+                let updatedElement = prevState.schools.find(school => school.id === payload.id)
+                let updatedSchool = {...updatedElement, [payload.field]: payload.value}
+                return {...prevState, schools: prevState.schools.map(school => school.id == payload.id ? updatedSchool : school),
                     history: [...prevState.history, `Field ${payload.field} was updated to ${payload.value} ${now}`]}
              
                 }
@@ -30,15 +31,12 @@ export const reduser = (prevState, {type, payload }) => {
     
 
         case ACTION_TYPES.REGISTRATION_NEW_COURSE_ACTION_TYPE: {
-
-
-
             if (prevState.chosenSchool) {
-                let existedCourse = prevState.chosenSchool.availableCourses.find(course =>course.courseName === payload.courseName);
+                let updatedElement = prevState.schools.find(school => school.id === payload.id);
+                let existedCourse = updatedElement.availableCourses.find(course =>course.courseName === payload.courseName);
                 if (existedCourse === undefined){
-                    let updatedSchool = {...prevState.chosenSchool, availableCourses: [...prevState.chosenSchool.availableCourses, payload]}
-                    console.log(updatedSchool );
-                    return {...prevState, schools: prevState.schools.map(school => school.id == prevState.chosenSchool.id ? updatedSchool : school),
+                    let updatedSchool = {...updatedElement, availableCourses: [...updatedElement.availableCourses, {courseName: payload.courseName, totalLessons: payload.totalLessons, availableTeachersAmount: payload.availableTeachersAmount}]}
+                    return {...prevState, schools: prevState.schools.map(school => school.id == payload.id ? updatedSchool : school),
                         history: [...prevState.history, `New course ${payload.courseName} was created ${now}`]}
                 }
             }
@@ -47,11 +45,12 @@ export const reduser = (prevState, {type, payload }) => {
         case ACTION_TYPES.LEARNING_GROUP_START_ACTION_TYPE: {  
             console.log(payload.teacherName);
             if (prevState.chosenSchool, payload.teacherName) {
-                let existedCourse = prevState.chosenSchool.availableCourses.find(course =>course.courseName === payload.courseName);
+                let updatedElement = prevState.schools.find(school => school.id === payload.schoolId);
+                let existedCourse = updatedElement.availableCourses.find(course =>course.courseName === payload.courseName);
                 if (existedCourse !== undefined && existedCourse.availableTeachersAmount>0) {
-                    let updatedSchool = {...prevState.chosenSchool, startedGroups: [...prevState.chosenSchool.startedGroups, {groupId: payload.groupId, courseName: payload.courseName, teacherName: payload.teacherName, amountOfStudents: payload.amountOfStudents, passedLessons: []}]}
+                    let updatedSchool = {...updatedElement, startedGroups: [...updatedElement.startedGroups, {groupId: payload.groupId, courseName: payload.courseName, teacherName: payload.teacherName, amountOfStudents: payload.amountOfStudents, passedLessons: []}]}
                     console.log(updatedSchool);
-                    return {...prevState, schools: prevState.schools.map(school => school.id == prevState.chosenSchool.id ? updatedSchool : school),
+                    return {...prevState, schools: prevState.schools.map(school => school.id == payload.schoolId ? updatedSchool : school),
                         history: [...prevState.history, `New learning group ${payload.courseName} was started ${now} by ${payload.teacherName}`]}
                 }
             }    
@@ -60,37 +59,38 @@ export const reduser = (prevState, {type, payload }) => {
         case ACTION_TYPES.LEARNING_GROUP_END_ACTION_TYPE: {
 
             if(prevState.chosenSchool){
-                let chooseSchool2 = prevState.schools.find(school => school.id == prevState.chosenSchool.id);
-                let finishedGroupIndex = chooseSchool2.startedGroups.findIndex(group => group.courseName == payload.courseName && group.teacherName == payload.teacherName);
+                let updatedElement = prevState.schools.find(school => school.id === payload.id);
+                let finishedGroupIndex = updatedElement.startedGroups.findIndex(group => group.courseName == payload.courseName && group.teacherName == payload.teacherName);
                 console.log(payload.courseName, finishedGroupIndex);
                 if ( finishedGroupIndex >= 0 ) {
                     console.log(finishedGroupIndex);
-                  let  updatedSchool =  {...prevState.chosenSchool, startedGroups: prevState.chosenSchool.startedGroups.splice(finishedGroupIndex, 1)};
+                  let  updatedSchool =  {...updatedElement, startedGroups: updatedElement.startedGroups.splice(finishedGroupIndex, 1)};
                     console.log(updatedSchool);
-                  return {...prevState, schools: prevState.schools.map(school => school.id === prevState.chosenSchool.id ? updatedSchool : school),
+                  return {...prevState, schools: prevState.schools.map(school => school.id === payload.id ? updatedSchool : school),
                     history: [...prevState.history, `Learning group ${payload.courseName} was ended ${now} by ${payload.teacherName}`]}  
                 }
             }
             
         }
-/*
+
         case ACTION_TYPES.LESSON_DONE_ACTION_TYPE: {
             if(prevState.chosenSchool) {
-                let chooseSchool2 = prevState.schools.find(school => school.id == prevState.chosenSchool.id);
-                console.log(chooseSchool2);
-                let editedLearningGroup = chooseSchool2.startedGroups.find(group => group.groupId === payload.groupId);
+                let updatedElement = prevState.schools.find(school => school.id === payload.id);
+    
+                let editedLearningGroup = updatedElement.startedGroups.find(group => group.groupId === payload.groupId);
+                console.log(editedLearningGroup);
                 if (editedLearningGroup) {
-                   let existedLesson = editedLearningGroup.find(group => group.title === payload.title && group.topics === payload.topics);
+                   let existedLesson = editedLearningGroup.passedLessons.find(group => group.title === payload.title && group.topics === payload.topics);
                    if (existedLesson == undefined){
                     let updatedLearningGroup = {...editedLearningGroup, passedLessons: [...editedLearningGroup.passedLessons, {title: payload.title, topics: payload.topics}]};
-                    let updatedSchool = {...chooseSchool2, startedGroups: {...chooseSchool2.startedGroups, updatedLearningGroup}}
-                    return {...prevState, schools: prevState.schools.map(school => school.id === prevState.chosenSchool.id ? updatedSchool : school),
+                    let updatedSchool = {...updatedElement, startedGroups: {...updatedElement.startedGroups, updatedLearningGroup}}
+                    return {...prevState, schools: prevState.schools.map(school => school.id === payload.id ? updatedSchool : school),
                     history: [...prevState.history, `Lesson ${payload.title} was passed ${now} in ${editedLearningGroup.courseName}`]}
                    }
                 }
             }
         }
-        */
+        
         default: {
             return prevState;
         }
