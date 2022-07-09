@@ -83,7 +83,9 @@ export const reduser = (prevState, {type, payload }) => {
                    let existedLesson = editedLearningGroup.passedLessons.find(group => group.title === payload.title && group.topics === payload.topics);
                    if (existedLesson == undefined){
                     let updatedLearningGroup = {...editedLearningGroup, passedLessons: [...editedLearningGroup.passedLessons, {title: payload.title, topics: payload.topics}]};
-                    let updatedSchool = {...updatedElement, startedGroups: {...updatedElement.startedGroups, updatedLearningGroup}}
+                    console.log(updatedLearningGroup);
+                    let updatedSchool = {...updatedElement, startedGroups:  updatedElement.startedGroups.map(group => group.groupId === payload.groupId ? updatedLearningGroup : group)} ;
+                    console.log(updatedSchool);
                     return {...prevState, schools: prevState.schools.map(school => school.id === payload.id ? updatedSchool : school),
                     history: [...prevState.history, `Lesson ${payload.title} was passed ${now} in ${editedLearningGroup.courseName}`]}
                    }
