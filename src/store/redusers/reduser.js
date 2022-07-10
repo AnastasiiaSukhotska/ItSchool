@@ -43,13 +43,14 @@ export const reduser = (prevState, {type, payload }) => {
         }
 
         case ACTION_TYPES.LEARNING_GROUP_START_ACTION_TYPE: {  
-            console.log(payload.teacherName);
             if (prevState.chosenSchool, payload.teacherName) {
                 let updatedElement = prevState.schools.find(school => school.id === payload.schoolId);
                 let existedCourse = updatedElement.availableCourses.find(course =>course.courseName === payload.courseName);
                 if (existedCourse !== undefined && existedCourse.availableTeachersAmount>0) {
-                    let updatedSchool = {...updatedElement, startedGroups: [...updatedElement.startedGroups, {groupId: payload.groupId, courseName: payload.courseName, teacherName: payload.teacherName, amountOfStudents: payload.amountOfStudents, passedLessons: []}]}
-                    console.log(updatedSchool);
+                    let changedCourse = {...existedCourse, availableTeachersAmount: existedCourse.availableTeachersAmount - 1};
+                    let updatedSchool = {...updatedElement,
+                                        startedGroups: [...updatedElement.startedGroups, {groupId: payload.groupId, courseName: payload.courseName, teacherName: payload.teacherName, amountOfStudents: payload.amountOfStudents, passedLessons: []}],
+                                        availableCourses: updatedElement.availableCourses.map(course => course.courseName === changedCourse.courseName ? changedCourse : course)}
                     return {...prevState, schools: prevState.schools.map(school => school.id == payload.schoolId ? updatedSchool : school),
                         history: [...prevState.history, `New learning group ${payload.courseName} was started ${now} by ${payload.teacherName}`]}
                 }
@@ -61,11 +62,12 @@ export const reduser = (prevState, {type, payload }) => {
             if(prevState.chosenSchool){
                 let updatedElement = prevState.schools.find(school => school.id === payload.id);
                 let finishedGroupIndex = updatedElement.startedGroups.findIndex(group => group.courseName == payload.courseName && group.teacherName == payload.teacherName);
-                console.log(payload.courseName, finishedGroupIndex);
                 if ( finishedGroupIndex >= 0 ) {
-                    console.log(finishedGroupIndex);
-                  let  updatedSchool =  {...updatedElement, startedGroups: updatedElement.startedGroups.splice(finishedGroupIndex, 1)};
-                    console.log(updatedSchool);
+                  let existedCourse = updatedElement.availableCourses.find(course =>course.courseName === payload.courseName);
+                  let changedCourse = {...existedCourse, availableTeachersAmount: existedCourse.availableTeachersAmount + 1};
+                  let  updatedSchool =  {...updatedElement, 
+                    startedGroups: updatedElement.startedGroups.splice(finishedGroupIndex, 1),
+                    availableCourses: updatedElement.availableCourses.map(course => course.courseName === changedCourse.courseName ? changedCourse : course)};
                   return {...prevState, schools: prevState.schools.map(school => school.id === payload.id ? updatedSchool : school),
                     history: [...prevState.history, `Learning group ${payload.courseName} was ended ${now} by ${payload.teacherName}`]}  
                 }
@@ -76,16 +78,12 @@ export const reduser = (prevState, {type, payload }) => {
         case ACTION_TYPES.LESSON_DONE_ACTION_TYPE: {
             if(prevState.chosenSchool) {
                 let updatedElement = prevState.schools.find(school => school.id === payload.id);
-    
                 let editedLearningGroup = updatedElement.startedGroups.find(group => group.groupId === payload.groupId);
-                console.log(editedLearningGroup);
                 if (editedLearningGroup) {
                    let existedLesson = editedLearningGroup.passedLessons.find(group => group.title === payload.title && group.topics === payload.topics);
                    if (existedLesson == undefined){
                     let updatedLearningGroup = {...editedLearningGroup, passedLessons: [...editedLearningGroup.passedLessons, {title: payload.title, topics: payload.topics}]};
-                    console.log(updatedLearningGroup);
                     let updatedSchool = {...updatedElement, startedGroups:  updatedElement.startedGroups.map(group => group.groupId === payload.groupId ? updatedLearningGroup : group)} ;
-                    console.log(updatedSchool);
                     return {...prevState, schools: prevState.schools.map(school => school.id === payload.id ? updatedSchool : school),
                     history: [...prevState.history, `Lesson ${payload.title} was passed ${now} in ${editedLearningGroup.courseName}`]}
                    }
