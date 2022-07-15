@@ -1,0 +1,37 @@
+.left-sidebar-container {
+    display: flex;
+    flex-direction: column;
+    flex-wrap: nowrap;
+    padding: 20px;
+    background-color: #D9D9D9;
+}
+
+
+
+.left-sidebar-container__switch-chosen-school-button-ordinary {
+    width: 50px;
+    height: 50px;
+    background-color: #969696;
+    border: none;
+    color: #fff;
+    text-transform: uppercase;
+    font-weight: bold;
+    font-family: 'Inter';
+    font-size: 16px;
+    line-height: 19px;
+    margin-bottom: 10px;
+}
+
+.left-sidebar-container__switch-chosen-school-button-chosen {
+    width: 50px;
+    height: 50px;
+    background-color: #5A5A5A;
+    border: none;
+    color: #fff;
+    text-transform: uppercase;
+    font-weight: bold;
+    font-family: 'Inter';
+    font-size: 16px;
+    line-height: 19px;
+    margin-bottom: 10px;
+}

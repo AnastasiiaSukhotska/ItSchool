@@ -1,0 +1,18 @@
+.groups-container {
+    flex-grow: 1;
+    padding: 20px 10px 60px 10px;
+    background-color: #D9D9D9;
+}
+
+.group-container-title {
+    font-family: 'Inter';
+    font-weight: 700;
+    font-size: 16px;
+    line-height: 19px;
+    opacity: 0.5;
+    padding-bottom: 20px;
+}
+
+.groups-container-none {
+    display: none;
+}

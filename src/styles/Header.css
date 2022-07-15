@@ -1,0 +1,45 @@
+*{
+    font-family: 'Inter';
+}
+.header-container-welcome-sign-none {
+    display: none;
+}
+
+.header-container-welcome-sign{
+    font-size: 24px;
+    font-weight: 700;
+    margin-bottom: 5px;
+    margin: 0 auto;
+}
+
+.header-container {
+    border-bottom: 1px solid #DFDFDF;
+    width: 100%;
+    display: flex;
+    flex-direction: row;
+    flex-wrap: nowrap;
+}
+
+
+.header-container__aditional-information {
+    margin-left: auto;
+  
+}
+.header-container__title {
+    font-size: 24px;
+    font-weight: 700;
+    margin-bottom: 5px;
+    text-transform: capitalize;
+}
+
+.header-container__description {
+    font-weight: 400;
+    font-size: 12px;
+    margin-bottom: 40px;
+}
+
+.header-container__group-count, .header-container__student-count{
+    font-weight: 400;
+    font-size: 12px;
+    padding-bottom: 10px;
+}

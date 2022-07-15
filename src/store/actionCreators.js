@@ -1,5 +1,6 @@
 import { ACTION_TYPES } from "./actionTypes";
 
+
 export function creatingNewSchool ( name, description, maxGroups, maxPeopleGroup, id) {
     return { type: ACTION_TYPES.CREATING_NEW_SCHOOL_ACTION_TYPE, payload: {name: name, description: description, maxGroups: maxGroups, maxPeopleGroup: maxPeopleGroup, id, availableCourses: [], startedGroups: []} };
 }
@@ -25,4 +26,8 @@ export function lessonDone ( title, topics, groupId, id ) {
 
 export function chooseSchool (id) {
     return { type: ACTION_TYPES.CHOOSE_SCHOOLE_ACTION_TYPE, payload: {id}}
+}
+
+export function chooseCourse (courseName) {
+    return {type: ACTION_TYPES.CHOOSE_COURSE_ACTION_TYPE, payload: {courseName}}
 }
