@@ -2,9 +2,11 @@ import { useSelector } from "react-redux";
 import store from "../store";
 import { chooseSchool, creatingNewCourse, creatingNewSchool, learningGroupsEnd, learningGroupStart, lessonDone, schoolDataUpdated } from "../store/actionCreators";
 
-export function Test () {
- 
+export default function Test () {
   /*
+  store.dispatch(creatingNewSchool('Hillel', 'jniniu', '7', '8', 1));
+   store.dispatch(creatingNewSchool('Step', 'hbhniu', '6', '3', 2));
+  
    store.dispatch(creatingNewSchool('Hillel', 'jniniu', '7', '8', 1));
    store.dispatch(creatingNewSchool('Step', 'hbhniu', '6', '3', 2));
    store.dispatch(chooseSchool(1));
